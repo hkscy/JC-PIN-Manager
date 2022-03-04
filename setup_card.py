@@ -20,7 +20,7 @@ PIN_RESET =   [0x80, 0x20, 0x00, 0x01, 0x04] # Reset the global PIN to the FORMA
 DEFAULT_PIN = [0x30, 0x30, 0x30, 0x30] 
 PIN_VERIFY = [0x80, 0x30, 0x00, 0x01, 0x04]	# Verify the global PIN to the FORMAT_BCD PIN following
 
-SUCCESS_DICT = {1:'SUCCESS', 0:'FAILURE'}
+PIN_OUTCOME_DICT = {1:'SUCCESS', 0:'FAILURE', 0xEE:'Unhandled Exception!', 0xFF: 'PIN Exception thrown by card!'}
 
 for reader in readers():
 	try:
@@ -53,23 +53,6 @@ try:
 		print('SetupApplet not found, please install SetupApplet.cap before running this program.')
 		exit()
 
-	apdu = PIN_ATTEMPTS_REMAIN
-	response, sw1, sw2 = cardservice.connection.transmit(apdu)
-
-	if sw1==0x61:	# Command successful
-		print('{} bytes available to be read from card.'.format(sw2))
-
-	apdu =  GET_RESPONSE + [sw2]
-	response, sw1, sw2 = cardservice.connection.transmit(apdu)
-
-	print(response, sw1, sw2)
-
-	if sw1==0x90 and sw2==0x00:	# Bytes read successfully
-		print('{} PIN tries remain on card.'.format(response[0]))
-	else:
-		print('Error: unexpected response from card: {:02X}{:02X}'.format(sw1,sw2))
-		exit()
-
 	print('Attempting to reset global PIN to default/known value.')
 
 	apdu = PIN_RESET + DEFAULT_PIN
@@ -82,7 +65,9 @@ try:
 		response, sw1, sw2 = cardservice.connection.transmit(apdu)
 
 		if sw1==0x90 and sw2==0x00:	# Bytes read successfully
-			print('Response from PIN reset operation: {}.'.format(SUCCESS_DICT[response[0]]))
+			print('Response from PIN reset operation: {}.'.format(PIN_OUTCOME_DICT[response[0]]))
+			if response[0] > 1:
+				exit()
 		else:
 			print('Error: unexpected response from card: {:02X}{:02X}'.format(sw1,sw2))
 			exit()
@@ -102,7 +87,7 @@ try:
 		response, sw1, sw2 = cardservice.connection.transmit(apdu)
 
 		if sw1==0x90 and sw2==0x00:	# Bytes read successfully
-			print('Response from PIN verify operation: {}.'.format(SUCCESS_DICT[response[0]]))
+			print('Response from PIN verify operation: {}.'.format(PIN_OUTCOME_DICT[response[0]]))
 		else:
 			print('Error: unexpected response from card: {:02X}{:02X}'.format(sw1,sw2))
 			exit()
