@@ -39,4 +39,4 @@ gp --install bin/SetupApplet.cap --privs CVMManagement --key-enc ENC-KEY --key-m
 3. Run the ``setup_card.py`` host application which will instruct the applet to return the number of PIN retries on the global PIN, reset the global PIN to ``3333`` and then verify the new PIN.
 
 ## Debugging
-Has been tested using the Taisys SIMoME only. Please let me know if it also works on your hardware!
+Has been tested using the Taisys SIMoME only. Please let me know if it also works on your hardware! You may need to replace the GlobalPlatform API jar file with a version which is compatible with your JavaCard.
