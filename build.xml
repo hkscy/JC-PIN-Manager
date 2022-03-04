@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="QRSTK" default="dist" basedir=".">
+  <description>Builds the project.</description>
+  
+  <target name="dist" description="generate the distribution">
+    <tstamp/>
+    <get src="https://github.com/martinpaljak/ant-javacard/releases/latest/download/ant-javacard.jar" dest="." skipexisting="true"/>
+    <!-- Create the distribution directory -->
+    <taskdef name="javacard" classname="pro.javacard.ant.JavaCard" classpath="ant-javacard.jar"/>
+    <javacard>
+      <cap targetsdk="oracle_javacard_sdks/jc304_kit" jckit="oracle_javacard_sdks/jc305u3_kit" output="bin/SetupApplet.cap" sources="src" classes="bin" version="1.0">
+        <applet class="SetupApplet.SetupApplet" aid="0A:00:C0:FF:EE:0001:00"/>
+        <!--import exps="exp" jar="lib/sim.jar"/-->
+        <import exps="exp" jar="lib/gpapi-globalplatform.jar"/>
+      </cap>
+    </javacard>
+  </target>
+
+  <target name="clean" description="clean up">
+    <!-- Delete the built applet -->
+    <delete dir="bin/"/>
+  </target>
+
+</project>
+
