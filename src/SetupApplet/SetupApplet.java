@@ -13,15 +13,15 @@ import org.globalplatform.*;
 public class SetupApplet extends Applet {
 
 	// Setup code of CLA byte in the APDU header
-    final static byte Setup_CLA =(byte) 0x80;
+	final static byte Setup_CLA =(byte) 0x80;
 
 	// Applet codes of INS byte in the APDU header
 	final static byte COUNT = (byte) 0x10;
 	final static byte SET = (byte) 0x20;
-    final static byte VERIFY = (byte) 0x30;
+	final static byte VERIFY = (byte) 0x30;
 
 	// Signal that the PIN verification failed
-    final static short PIN_VERIFICATION_FAILED = 0x6300;
+	final static short PIN_VERIFICATION_FAILED = 0x6300;
 
 	// Class variables
 	static short le;
@@ -54,15 +54,15 @@ public class SetupApplet extends Applet {
 		bLen = (byte)apdu.setIncomingAndReceive(); 
 
 		if (apdu.isISOInterindustryCLA()) {
-            if (buffer[ISO7816.OFFSET_INS] == (byte)(0xA4)) {
-                return;
-            } else {
-                ISOException.throwIt (ISO7816.SW_CLA_NOT_SUPPORTED);
-            }
-        }
+			if (buffer[ISO7816.OFFSET_INS] == (byte)(0xA4)) {
+				return;
+			} else {
+				ISOException.throwIt (ISO7816.SW_CLA_NOT_SUPPORTED);
+			}
+		}
 
 		if (buffer[ISO7816.OFFSET_CLA] != Setup_CLA)
-        	ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
+			ISOException.throwIt(ISO7816.SW_CLA_NOT_SUPPORTED);
 
 		switch (buffer[ISO7816.OFFSET_INS]) {
 
@@ -72,7 +72,7 @@ public class SetupApplet extends Applet {
 				if ( le < 2 )
 					ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 
-        		apdu.setOutgoingLength((byte)1);
+				apdu.setOutgoingLength((byte)1);
 				buffer[0] = globalpin.getTriesRemaining();
 				apdu.sendBytes((short)0, (short)1);
 				
@@ -105,7 +105,7 @@ public class SetupApplet extends Applet {
 				if ( le < 2 )
 					ISOException.throwIt(ISO7816.SW_WRONG_LENGTH); // 6700
 
-        		apdu.setOutgoingLength((byte)1);
+				apdu.setOutgoingLength((byte)1);
 				apdu.sendBytes( (short)0, (short)1 );
 
 				return;
@@ -128,16 +128,15 @@ public class SetupApplet extends Applet {
 				if ( le < 2 )
 					ISOException.throwIt(ISO7816.SW_WRONG_LENGTH); // 6700
 
-        		apdu.setOutgoingLength((byte)1);
+				apdu.setOutgoingLength((byte)1);
 				apdu.sendBytes( (short)0, (short)1 );
 
 				return;
 
-			default:       
+			default:
 				ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
 		
 		}
 	}
-  
 	
 }
